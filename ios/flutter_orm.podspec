@@ -26,12 +26,12 @@ A new Flutter FFI plugin project.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'
 
-  # s.prepare_command = <<-CMD
-  #   # Unzip File
-  #   unzip -o "opencv-4.5.3-ios-framework.zip" -d "${PODS_TARGET_SRCROOT}"
-  #   # Delete Zip File
-  #   # rm "opencv-4.5.3-ios-framework.zip"
-  # CMD
+  s.prepare_command = <<-CMD
+    # Unzip File
+    unzip -o "opencv2.framework.zip" -d "${PODS_TARGET_SRCROOT}"
+    # Delete Zip File
+    # rm "opencv2.framework.zip"
+  CMD
 
   # Tell CocoaPods not to remove framework
   s.preserve_paths = 'opencv2.framework'
