@@ -28,7 +28,7 @@ A new Flutter FFI plugin project.
 
   s.prepare_command = <<-CMD
     # Unzip File
-    unzip -o "opencv2.framework.zip" -d "${PODS_TARGET_SRCROOT}"
+    unzip -o "opencv2.framework.zip"
     # Delete Zip File
     # rm "opencv2.framework.zip"
   CMD
