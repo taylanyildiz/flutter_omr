@@ -30,3 +30,4 @@ migrate_working_dir/
 build/
 example/
 ios/opencv2.framework
+ios/__MACOSX
