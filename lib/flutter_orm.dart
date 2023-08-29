@@ -38,6 +38,7 @@ abstract class FlutterORM {
       List<ORMQuestion> answers = [...orm.answers];
       final type = ORMHelper.intToAnsserType(resultBuffer.elementAt(i).value);
       answers[i] = answers[i].copy(answerType: type);
+      orm = orm.copy(answers: answers);
     }
     malloc.free(resultBuffer);
     orm = orm.copy(imagePath: output.join('.'));
