@@ -1,5 +1,5 @@
-name: flutter_orm
-description: A new Flutter FFI plugin project.
+name: flutter_omr
+description: Flutter Optical Mark Recognition (OMR)
 version: 0.0.1
 
 environment:

@@ -2,7 +2,7 @@ import 'dart:ffi';
 import 'dart:io';
 
 /// Library name
-const String _libName = 'flutter_orm';
+const String _libName = 'flutter_omr';
 
 /// The dynamic library in which the symbols for [FlutterOrmBindings] can be found.
 final DynamicLibrary dylib = () {

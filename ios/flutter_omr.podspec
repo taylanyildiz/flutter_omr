@@ -1,20 +1,17 @@
 #
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html.
-# Run `pod lib lint flutter_orm.podspec` to validate before publishing.
+# Run `pod lib lint flutter_omr.podspec` to validate before publishing.
 #
 Pod::Spec.new do |s|
-  s.name             = 'flutter_orm'
+  s.name             = 'flutter_omr'
   s.version          = '0.0.1'
-  s.summary          = 'Flutter FFI Opencv CV Plugin.'
+  s.summary          = 'Flutter Optical Mark Recognition (OMR).'
   s.description      = 'Flutter Optical Reader'
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Taylan YILDIZ' => 'taylnyldiz@gmail.com' }
 
-  # This will ensure the source files in Classes/ are included in the native
-  # builds of apps using this FFI plugin. Podspec does not support relative
-  # paths, so Classes contains a forwarder C file that relatively imports
-  # `../src/*` so that the C sources can be shared among all target platforms.
+
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'

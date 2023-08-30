@@ -1,4 +1,4 @@
-# flutter_orm
+# flutter_omr
 ## OPEN-CV 4.5.3
 A new Flutter FFI plugin project.
 
@@ -62,8 +62,8 @@ The native build systems that are invoked by FFI (and method channel) plugins ar
 * For Android: Gradle, which invokes the Android NDK for native builds.
   * See the documentation in android/build.gradle.
 * For iOS and MacOS: Xcode, via CocoaPods.
-  * See the documentation in ios/flutter_orm.podspec.
-  * See the documentation in macos/flutter_orm.podspec.
+  * See the documentation in ios/flutter_omr.podspec.
+  * See the documentation in macos/flutter_omr.podspec.
 * For Linux and Windows: CMake.
   * See the documentation in linux/CMakeLists.txt.
   * See the documentation in windows/CMakeLists.txt.
@@ -72,17 +72,17 @@ The native build systems that are invoked by FFI (and method channel) plugins ar
 
 To use the native code, bindings in Dart are needed.
 To avoid writing these by hand, they are generated from the header file
-(`src/flutter_orm.h`) by `package:ffigen`.
+(`src/flutter_omr.h`) by `package:ffigen`.
 Regenerate the bindings by running `flutter pub run ffigen --config ffigen.yaml`.
 
 ## Invoking native code
 
 Very short-running native functions can be directly invoked from any isolate.
-For example, see `sum` in `lib/flutter_orm.dart`.
+For example, see `sum` in `lib/flutter_omr.dart`.
 
 Longer-running functions should be invoked on a helper isolate to avoid
 dropping frames in Flutter applications.
-For example, see `sumAsync` in `lib/flutter_orm.dart`.
+For example, see `sumAsync` in `lib/flutter_omr.dart`.
 
 ## Flutter help
 

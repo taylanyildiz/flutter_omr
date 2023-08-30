@@ -1,21 +1,27 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_orm (0.0.1):
+  - flutter_omr (0.0.1):
+    - Flutter
+  - image_picker_ios (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - flutter_orm (from `.symlinks/plugins/flutter_orm/ios`)
+  - flutter_omr (from `.symlinks/plugins/flutter_omr/ios`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  flutter_orm:
-    :path: ".symlinks/plugins/flutter_orm/ios"
+  flutter_omr:
+    :path: ".symlinks/plugins/flutter_omr/ios"
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
 
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  flutter_orm: 0678a514851473cbf7a044f7cc21557a8649b473
+  flutter_omr: 3c81e7a355caaf2fd13394d155ce0d93090bbdf5
+  image_picker_ios: 4a8aadfbb6dc30ad5141a2ce3832af9214a705b5
 
 PODFILE CHECKSUM: 6b9eb94e9f98a329f2ef624b852a6e42d090af2b
 

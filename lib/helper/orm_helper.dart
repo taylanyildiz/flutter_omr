@@ -1,4 +1,4 @@
-import 'package:flutter_orm/models/orm_enums.dart';
+import '../models/models.dart';
 
 abstract class ORMHelper {
   ORMHelper._();

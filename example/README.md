@@ -1,6 +1,6 @@
-# flutter_orm_example
+# flutter_omr_example
 
-Demonstrates how to use the flutter_orm plugin.
+Demonstrates how to use the flutter_omr plugin.
 
 ## Getting Started
 

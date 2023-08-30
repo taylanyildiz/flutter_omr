@@ -1,9 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_orm/flutter_orm.dart';
-import 'package:flutter_orm/models/models.dart';
-import 'package:flutter_orm_example/picker_helper.dart';
+import 'package:flutter_omr/flutter_omr.dart';
+import 'package:flutter_omr/models/models.dart';
+import 'package:flutter_omr_example/picker_helper.dart';
 import 'package:image_picker/image_picker.dart';
 
 void main() {
@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    openCvVersion = FlutterORM.version;
+    openCvVersion = FlutterOMR.version;
     log("OPEN-CV Version $openCvVersion");
     super.initState();
   }
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
 
   void _onReadImage() async {
     if (file == null) return;
-    EntOrm orm = FlutterORM.onOptic(30, 2, file!.path);
+    EntOrm orm = FlutterOMR.onOptic(30, 2, file!.path);
     setState(() => file = File(orm.imagePath));
   }
 

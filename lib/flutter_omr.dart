@@ -1,12 +1,12 @@
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
-import 'package:flutter_orm/src/orm.dart';
 import '/helper/orm_helper.dart';
 import 'models/models.dart';
-import 'src/orm_bindings_generated.dart';
+import 'src/omr.dart';
+import 'src/omr_bindings_generated.dart';
 
-abstract class FlutterORM {
-  FlutterORM._();
+abstract class FlutterOMR {
+  FlutterOMR._();
 
   /// The bindings to the native functions in [_dylib].
   static final OrmBindings _bindings = OrmBindings(dylib);
