@@ -1,7 +1,7 @@
 import '../models/models.dart';
 
-abstract class ORMHelper {
-  ORMHelper._();
+abstract class OMRHelper {
+  OMRHelper._();
 
   static AnswerType intToAnsserType(int value) {
     switch (value) {

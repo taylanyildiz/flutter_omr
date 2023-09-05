@@ -36,7 +36,7 @@ abstract class FlutterOMR {
 
     for (var i = 0; i < questionCount; i++) {
       List<ORMQuestion> answers = [...orm.answers];
-      final type = ORMHelper.intToAnsserType(resultBuffer.elementAt(i).value);
+      final type = OMRHelper.intToAnsserType(resultBuffer.elementAt(i).value);
       answers[i] = answers[i].copy(answerType: type);
       orm = orm.copy(answers: answers);
     }

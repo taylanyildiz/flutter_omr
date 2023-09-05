@@ -46,10 +46,12 @@ class OrmBindings {
             Pointer<Int32>,
           )>();
 
+  /// Open-CV Version
   String getOpenCVVersion() {
     return _getOpenCVVersion().cast<Utf8>().toDartString();
   }
 
+  /// Image to gray
   void convertImageToGrayImage(String inputPath, String outputPath) {
     _convertImageToGrayImage(
       inputPath.toNativeUtf8(),
@@ -57,8 +59,14 @@ class OrmBindings {
     );
   }
 
-  void readOpticalForm(String inputPath, String outputPath, int questionCount,
-      int answerCount, Pointer<Int32> markings) {
+  /// Reade Optical Form
+  void readOpticalForm(
+    String inputPath,
+    String outputPath,
+    int questionCount,
+    int answerCount,
+    Pointer<Int32> markings,
+  ) {
     _readOpticalForm(
       inputPath.toNativeUtf8(),
       outputPath.toNativeUtf8(),

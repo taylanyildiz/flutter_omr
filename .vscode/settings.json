@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "vector": "cpp"
     },
     "cmake.sourceDirectory": "/Users/taylan/Desktop/plugins/flutter_omr/src"
 }
