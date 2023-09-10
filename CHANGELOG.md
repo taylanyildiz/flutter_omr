@@ -9,3 +9,7 @@
 ## 0.0.3
 
 * TODO: Read Optical Method Empty Exam Bug Fixed
+
+## 0.0.4
+
+* TODO: Read Optical Updated

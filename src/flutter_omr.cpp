@@ -92,12 +92,11 @@ cornerFinder(cv::Mat &myMat, int answerCount, int questionCount)
   cv::Mat matCanny;
   cv::Canny(matThresh, matCanny, 10, 50);
 
-  std::vector<std::vector<cv::Point>> contours;
+  std::vector<std::vector<cv::Point> > contours;
   std::vector<cv::Vec4i> hierarchy;
-  cv::findContours(matCanny, contours, hierarchy, cv::RETR_EXTERNAL,
-                   cv::CHAIN_APPROX_NONE);
+  cv::findContours(matCanny, contours, hierarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
   // double limit = matCanny.rows / 30;
-  std::vector<std::vector<cv::Point>> rectCon = rectContour(contours);
+  std::vector<std::vector<cv::Point> > rectCon = rectContour(contours);
   int squareCount = 6;
   if (answerCount == 2 && questionCount <= 10)
   {
@@ -280,12 +279,12 @@ extern "C"
     cv::cvtColor(matWarpColored, matWarpGray, cv::COLOR_BGR2GRAY);
 
     cv::Mat matBlur;
-    cv::GaussianBlur(matWarpGray, matBlur, cv::Size(5, 5), 0);
+    cv::GaussianBlur(matWarpGray, matBlur, cv::Size(5, 5), 1.5);
 
     cv::Mat matThresh;
-    // cv::threshold(matBlur, matThresh, 0, 255, cv::THRESH_BINARY_INV + cv::THRESH_OTSU);
+    cv::threshold(matBlur, matThresh, 0, 255, cv::THRESH_BINARY_INV + cv::THRESH_OTSU);
 
-    cv::adaptiveThreshold(matBlur, matThresh, 255, cv::ADAPTIVE_THRESH_MEAN_C,  cv::THRESH_BINARY_INV, 11, 2);
+    // cv::adaptiveThreshold(matBlur, matThresh, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C,  cv::THRESH_BINARY_INV, 11, 2);
 
     std::vector<cv::Mat> boxes = splitBoxes(matThresh, questionCount, answerCount);
 
