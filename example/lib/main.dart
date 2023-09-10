@@ -44,6 +44,8 @@ class _HomePageState extends State<HomePage> {
   /// Open-CV Version
   String? openCvVersion;
 
+  EntOrm? orm;
+
   /// Image file
   File? file;
 
@@ -62,8 +64,8 @@ class _HomePageState extends State<HomePage> {
 
   void _onReadImage() async {
     if (file == null) return;
-    EntOrm orm = FlutterOMR.onOptic(30, 2, file!.path);
-    setState(() => file = File(orm.imagePath));
+    orm = FlutterOMR.onOptic(10, 5, file!.path);
+    setState(() => file = File(orm!.imagePath));
   }
 
   @override
@@ -73,6 +75,23 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           Expanded(child: _buildImage),
+          if (orm != null)
+            Container(
+              color: Colors.transparent,
+              width: double.infinity,
+              height: 40.0,
+              child: ListView.separated(
+                separatorBuilder: (context, index) => const SizedBox(
+                  width: 5.0,
+                ),
+                scrollDirection: Axis.horizontal,
+                itemCount: orm!.questionCount,
+                itemBuilder: (context, index) {
+                  final answerType = orm!.answers[index];
+                  return Text("${index + 1}: ${answerType.answerType}");
+                },
+              ),
+            ),
           _buildPickButton,
           _buildReadButton,
         ],

@@ -21,11 +21,15 @@ abstract class FlutterOMR {
       answerCount: answerCount,
       imagePath: imagePath,
     );
+
     List<String> output = imagePath.split('.');
+
     output[output.length - 2] = "${output[output.length - 2]}_gray";
+
     Pointer<Int32> resultBuffer = malloc.allocate<Int32>(
       sizeOf<Int32>() * questionCount,
     );
+
     _bindings.readOpticalForm(
       imagePath,
       output.join("."),
@@ -40,8 +44,10 @@ abstract class FlutterOMR {
       answers[i] = answers[i].copy(answerType: type);
       orm = orm.copy(answers: answers);
     }
+
     malloc.free(resultBuffer);
     orm = orm.copy(imagePath: output.join('.'));
+
     return orm;
   }
 }

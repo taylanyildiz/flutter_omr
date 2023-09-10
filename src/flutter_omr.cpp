@@ -40,8 +40,7 @@ cv::Mat shadowRemove(const cv::Mat &img)
 
 // CORNER POINTS
 __attribute__((visibility("default"))) __attribute__((used))
-std::vector<cv::Point>
-getCornerPoints(const std::vector<cv::Point> &cont)
+std::vector<cv::Point> getCornerPoints(const std::vector<cv::Point> &cont)
 {
   double peri = cv::arcLength(cont, true);
   double epsilon = 0.02 * peri;
@@ -52,8 +51,8 @@ getCornerPoints(const std::vector<cv::Point> &cont)
 
 // FIND CONTOURS
 __attribute__((visibility("default"))) __attribute__((used))
-std::vector<std::vector<cv::Point>>
-rectContour(const std::vector<std::vector<cv::Point>> &contours)
+std::vector<std::vector<cv::Point> >
+rectContour(const std::vector<std::vector<cv::Point> > &contours)
 {
   std::vector<std::vector<cv::Point>> rectCon;
   for (const auto &contour : contours)
@@ -193,26 +192,28 @@ my_dilate(cv::Mat mat)
 extern "C"
 {
 
-  void platform_log(const char *fmt, ...)
-  {
+  /// Platform Logger
+  void platform_log(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
-#ifdef __ANDROID__
-    __android_log_vprint(ANDROID_LOG_VERBOSE, "FFI Logger: ", fmt, args);
-#else
-    vprintf(fmt, args);
-#endif
-    va_end(args);
+    #ifdef __ANDROID__
+        __android_log_vprint(ANDROID_LOG_VERBOSE, "FFI Logger: ", fmt, args);
+    #else
+        vprintf(fmt, args);
+    #endif
+        va_end(args);
   }
 
-  __attribute__((visibility("default"))) __attribute__((used)) const char *
-  getOpenCVVersion()
+  /// Open cv version
+  __attribute__((visibility("default"))) __attribute__((used)) 
+  const char * getOpenCVVersion()
   {
     return CV_VERSION;
   }
 
-  __attribute__((visibility("default"))) __attribute__((used)) void
-  convertImageToGrayImage(char *inputImagePath, char *outputPath)
+  /// Image to Gray
+  __attribute__((visibility("default"))) __attribute__((used)) 
+  void convertImageToGrayImage(char *inputImagePath, char *outputPath)
   {
     platform_log("PATH %s: ", inputImagePath);
     cv::Mat img = cv::imread(inputImagePath);
@@ -227,9 +228,9 @@ extern "C"
     platform_log("Image writed again ");
   }
 
-  __attribute__((visibility("default"))) __attribute__((used)) void
-  readOpticalForm(char *inputImagePath, char *outputPath, int questionCount,
-                  int answerCount, int *resultBuffer)
+  /// Optical Form Read
+  __attribute__((visibility("default"))) __attribute__((used)) 
+  void readOpticalForm(char *inputImagePath, char *outputPath, int questionCount, int answerCount, int *resultBuffer)
   {
 
     platform_log("PATH %s: ", inputImagePath);
@@ -241,10 +242,8 @@ extern "C"
     cv::resize(img, resized, cv::Size(1150, 1550));
 
     //    CORNER FINDING
-    std::vector<cv::Point> biggestContour =
-        cornerFinder(resized, answerCount, questionCount);
-    if (biggestContour.empty())
-    {
+    std::vector<cv::Point> biggestContour = cornerFinder(resized, answerCount, questionCount);
+    if (biggestContour.empty()) {
       platform_log("Not enough contours");
       cv::Mat matGray;
       cv::Mat shadowRemoved = shadowRemove(resized);
@@ -271,10 +270,11 @@ extern "C"
       pt1.at<float>(i, 1) = biggestContour[i].y;
     }
     cv::Mat pt2 = (cv::Mat_<float>(4, 2) << 0, 0, 450, 0, 0, 750, 450, 750);
+
     cv::Mat matrix = cv::getPerspectiveTransform(pt1, pt2);
     cv::Mat matBiggestContours = resized.clone();
-    cv::warpPerspective(matBiggestContours, matWarpColored, matrix,
-                        cv::Size(450, 750));
+
+    cv::warpPerspective(matBiggestContours, matWarpColored, matrix, cv::Size(450, 750));
 
     cv::Mat matWarpGray;
     cv::cvtColor(matWarpColored, matWarpGray, cv::COLOR_BGR2GRAY);
@@ -283,46 +283,51 @@ extern "C"
     cv::GaussianBlur(matWarpGray, matBlur, cv::Size(5, 5), 0);
 
     cv::Mat matThresh;
-    cv::threshold(matBlur, matThresh, 0, 255,
-                  cv::THRESH_BINARY_INV + cv::THRESH_OTSU);
+    // cv::threshold(matBlur, matThresh, 0, 255, cv::THRESH_BINARY_INV + cv::THRESH_OTSU);
 
-    //    SPLITTING THE IMAGE
-    std::vector<cv::Mat> boxes =
-        splitBoxes(matThresh, questionCount, answerCount);
+    cv::adaptiveThreshold(matBlur, matThresh, 255, cv::ADAPTIVE_THRESH_MEAN_C,  cv::THRESH_BINARY_INV, 11, 2);
 
-    std::vector<std::vector<int>> pixelValues(questionCount,
-                                              std::vector<int>(answerCount));
+    std::vector<cv::Mat> boxes = splitBoxes(matThresh, questionCount, answerCount);
+
+    std::vector<std::vector<int> > pixelValues(questionCount, std::vector<int>(answerCount));
+
     int countC = 0;
     int countR = 0;
     int boxesTotal = 0;
-    for (int i = 0; i < questionCount * answerCount; i++)
-    {
+    for (int i = 0; i < questionCount * answerCount; i++) {
+
       int totalPixels = cv::countNonZero(boxes[i]);
       pixelValues[countR][countC] = totalPixels;
-      platform_log("totalPixels:%i i:%i letter:%i allpixels:%i\n", totalPixels, i,
-                   i % 5, boxes[i].total());
+      
+      platform_log("totalPixels:%i i:%i letter:%i allpixels:%i\n", totalPixels, i, i % 5, boxes[i].total());
+      
       boxesTotal += totalPixels;
       countC++;
-      if (countC == answerCount)
-      {
+
+      if (countC == answerCount) {
         countR++;
         countC = 0;
       }
     }
 
-    //    FINDING MARKED CHOICES
+    // FINDING MARKED CHOICES
     std::vector<int> markings(questionCount);
+
     int limit = boxesTotal / (questionCount * (answerCount - 1));
+
     platform_log("total:%d limit: %d ", boxesTotal, limit);
-    if (answerCount == 2)
+    
+    if (answerCount == 2) {
       limit = boxesTotal / (questionCount * answerCount);
+    }
+
     platform_log("total:%d limit: %d ", boxesTotal, limit);
-    for (int x = 0; x < questionCount; x++)
-    {
+
+    for (int x = 0; x < questionCount; x++) {
       const std::vector<int> &arr = pixelValues[x];
       int maxIndex = 6;
-      for (int i = 0; i < answerCount; i++)
-      {
+
+      for (int i = 0; i < answerCount; i++) {
         if (arr[i] > limit)
         {
           if (maxIndex == 6)
@@ -354,28 +359,23 @@ extern "C"
 }
 
 __attribute__((visibility("default"))) __attribute__((used))
-std::vector<cv::Mat>
-splitBoxes(const cv::Mat &image, int questionCount, int choiceCount)
-{
+std::vector<cv::Mat> splitBoxes(const cv::Mat &image, int questionCount, int choiceCount) {
+
   std::vector<cv::Mat> boxes;
-  if (questionCount <= 10)
-  {
+
+  if (questionCount <= 10) {
     int numRows = questionCount + 6;
     int numCols = choiceCount + 2;
     float boxWidth = static_cast<float>(image.cols) / numCols;
     float boxHeight = static_cast<float>(image.rows) / numRows;
-    for (int r = 0; r < numRows; ++r)
-    {
-      for (int c = 0; c < numCols; ++c)
-      {
-        if ((r == 0 && c == 0) || (r == 0 && c == choiceCount + 1) ||
-            (r == questionCount + 5 && c == 0) ||
-            (r == questionCount + 5 && c == choiceCount + 1))
+
+    for (int r = 0; r < numRows; ++r) {
+      for (int c = 0; c < numCols; ++c) {
+        if ((r == 0 && c == 0) || (r == 0 && c == choiceCount + 1) || (r == questionCount + 5 && c == 0) || (r == questionCount + 5 && c == choiceCount + 1))
         {
           cv::Mat roi = getBox(image, boxWidth, boxHeight, c, r);
           int totalPixels = cv::countNonZero(roi);
-          platform_log(">>>>>>totalPixels:%i allpixels:%i r:%i c:%i \n",
-                       totalPixels, roi.total(), r, c);
+          platform_log(">>>>>>totalPixels:%i allpixels:%i r:%i c:%i \n", totalPixels, roi.total(), r, c);
         }
         if (r >= 5 && r < 5 + questionCount && c >= 2 && c < 2 + choiceCount)
         {
@@ -385,8 +385,8 @@ splitBoxes(const cv::Mat &image, int questionCount, int choiceCount)
       }
     }
   }
-  else if (questionCount > 10 && questionCount <= 20)
-  {
+
+  else if (questionCount > 10 && questionCount <= 20) {
     int numRows = 10 + 6;
     int numCols = choiceCount * 2 + 4;
     float boxWidth = static_cast<float>(image.cols) / numCols;
@@ -410,6 +410,7 @@ splitBoxes(const cv::Mat &image, int questionCount, int choiceCount)
         }
       }
     }
+
     for (int r = 0; r < numRows; ++r) // secondhalf
     {
       for (int c = 0; c < numCols; ++c)
@@ -423,6 +424,7 @@ splitBoxes(const cv::Mat &image, int questionCount, int choiceCount)
       }
     }
   }
+
   else
   {
     int numRows = questionCount / 2 + questionCount % 2 + 6;
@@ -439,8 +441,7 @@ splitBoxes(const cv::Mat &image, int questionCount, int choiceCount)
         {
           cv::Mat roi = getBox(image, boxWidth, boxHeight, c, r);
           int totalPixels = cv::countNonZero(roi);
-          platform_log(">>>>>>totalPixels:%i allpixels:%i r:%i c:%i \n",
-                       totalPixels, roi.total(), r, c);
+          platform_log(">>>>>>totalPixels:%i allpixels:%i r:%i c:%i \n", totalPixels, roi.total(), r, c);
         }
         if (r >= 5 && r < 5 + questionCount / 2 + questionCount % 2 && c >= 2 &&
             c < 2 + choiceCount)
@@ -450,10 +451,8 @@ splitBoxes(const cv::Mat &image, int questionCount, int choiceCount)
         }
       }
     }
-    for (int r = 0; r < numRows; ++r) // secondhalf
-    {
-      for (int c = 0; c < numCols; ++c)
-      {
+    for (int r = 0; r < numRows; ++r) {
+      for (int c = 0; c < numCols; ++c) {
         if (r >= 5 && r < 5 + questionCount / 2 && c >= choiceCount + 4 &&
             c < 4 + choiceCount * 2)
         {
@@ -462,13 +461,14 @@ splitBoxes(const cv::Mat &image, int questionCount, int choiceCount)
         }
       }
     }
+
   }
+
   return boxes;
 }
 
-__attribute__((visibility("default"))) __attribute__((used)) cv::Mat
-getBox(cv::Mat image, float boxWidth, float boxHeight, int c, int r)
-{
+__attribute__((visibility("default"))) __attribute__((used)) 
+cv::Mat getBox(cv::Mat image, float boxWidth, float boxHeight, int c, int r) {
   float resize = 0.7;
   int startX = static_cast<int>(std::round(c * boxWidth));
   int startY = static_cast<int>(std::round(r * boxHeight));
@@ -481,21 +481,15 @@ getBox(cv::Mat image, float boxWidth, float boxHeight, int c, int r)
   int smallerHeight = static_cast<int>(height * resize);
 
   cv::Rect roiRect(startX, startY, width, height);
-  if (roiRect.x < 0 || roiRect.y < 0 ||
-      roiRect.x + roiRect.width > image.cols ||
-      roiRect.y + roiRect.height > image.rows)
-  {
-    platform_log("ROI rect is out of bounds!    roiRect.x:%i roiRect.y:%i",
-                 roiRect.x, roiRect.y);
+  if (roiRect.x < 0 || roiRect.y < 0 || roiRect.x + roiRect.width > image.cols || roiRect.y + roiRect.height > image.rows) {
+
+    platform_log("ROI rect is out of bounds! roiRect.x:%i roiRect.y:%i", roiRect.x, roiRect.y);
+    
     while (roiRect.x + roiRect.width > image.cols && roiRect.x != 0)
       roiRect.x--;
     while (roiRect.y + roiRect.height > image.rows && roiRect.y != 0)
       roiRect.y--;
-    // if (roiRect.x == 0 || roiRect.y == 0)
-    // {
-    //     cv::Rect roiRect(c * boxWidth, r * boxHeight, boxWidth, boxHeight);
-    //     return image(roiRect).clone();
-    // }
+
     platform_log("roiRect.x:%i roiRect.y:%i", roiRect.x, roiRect.y);
   }
   cv::Mat roi = image(roiRect).clone();

@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_omr'
-  s.version          = '0.0.2'
+  s.version          = '0.0.3'
   s.summary          = 'Flutter Optical Mark Recognition (OMR).'
   s.description      = 'Flutter Optical Reader'
   s.homepage         = 'http://example.com'
